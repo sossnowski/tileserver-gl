@@ -1,0 +1,23 @@
+version: "3"
+
+services:
+  tile-server:
+    build: light/.
+    container_name: tile-server
+    hostname: tile-server
+    networks:
+      - tile-server
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.tiles.rule=Host(`tiles.spot-finder.app`)"
+      - "traefik.http.routers.tiles.entrypoints=websecure"
+      - "traefik.http.routers.tiles.tls.certresolver=letsencryptresolver"
+      - "traefik.http.services.tiles.loadbalancer.server.port=80"
+    volumes:
+      - /mnt/maps_data/openmaptiles_data:/data
+    ports:
+      - "3222:80"
+networks:
+  tile-server:
+    external: true
