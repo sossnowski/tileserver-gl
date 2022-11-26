@@ -19,6 +19,10 @@ export const serve_data = {
     app.get(
       '/:id/:z(\\d+)/:x(\\d+)/:y(\\d+).:format([\\w.]+)',
       (req, res, next) => {
+        const { headers } = req
+        if (!(headers['user-agent'].split('/')[0] === 'com.splendorwrld.spotfinder' ||
+          headers.host === 'tiles.spot-finder.app'))
+          return res.sendStatus(401);
         const item = repo[req.params.id];
         if (!item) {
           return res.sendStatus(404);
